@@ -1,0 +1,26 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/muhammadsarimsiddiqui/CLionProjects/HFTBot/main.cpp
+iostream
+-
+thread_utils.h
+/Users/muhammadsarimsiddiqui/CLionProjects/HFTBot/thread_utils.h
+
+/Users/muhammadsarimsiddiqui/CLionProjects/HFTBot/thread_utils.h
+iostream
+-
+atomic
+-
+thread
+-
+unistd.h
+-
+sys/syscall.h
+-
+
