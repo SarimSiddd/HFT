@@ -78,10 +78,25 @@
 				</MakeCommands>
 			</Target>
 		</Build>
+		<Unit filename="/Users/muhammadsarimsiddiqui/CLionProjects/HFTBot/lf_queue.h">
+			<Option target="HFTBot"/>
+		</Unit>
+		<Unit filename="/Users/muhammadsarimsiddiqui/CLionProjects/HFTBot/logging.h">
+			<Option target="HFTBot"/>
+		</Unit>
+		<Unit filename="/Users/muhammadsarimsiddiqui/CLionProjects/HFTBot/macros.h">
+			<Option target="HFTBot"/>
+		</Unit>
 		<Unit filename="/Users/muhammadsarimsiddiqui/CLionProjects/HFTBot/main.cpp">
 			<Option target="HFTBot"/>
 		</Unit>
+		<Unit filename="/Users/muhammadsarimsiddiqui/CLionProjects/HFTBot/mem_pool.h">
+			<Option target="HFTBot"/>
+		</Unit>
 		<Unit filename="/Users/muhammadsarimsiddiqui/CLionProjects/HFTBot/thread_utils.h">
+			<Option target="HFTBot"/>
+		</Unit>
+		<Unit filename="/Users/muhammadsarimsiddiqui/CLionProjects/HFTBot/time_utils.h">
 			<Option target="HFTBot"/>
 		</Unit>
 		<Unit filename="/Users/muhammadsarimsiddiqui/CLionProjects/HFTBot/CMakeLists.txt">

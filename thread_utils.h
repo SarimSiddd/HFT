@@ -13,7 +13,7 @@
 #include <sys/syscall.h>
 
 template<typename T, typename ... A>
-inline auto createAndStartThread(int core_id, std::string &name, T &&func, A &&...args) noexcept {
+inline auto createAndStartThread(int core_id, const std::string &name, T &&func, A &&...args) noexcept {
   std::atomic<bool> running, failed = false;
   auto thread_body = [&] {
     if (core_id >= 0){ //&& !setThreadCore(core_id)) {

@@ -1,25 +1,46 @@
 #include <iostream>
 #include "thread_utils.h"
+#include "mem_pool.h"
+#include "lf_queue.h"
+#include "logging.h"
 
 void print();
 template<typename T, typename ... A>
 void print(T&& first, A &&...args);
 void doSomeWork(int);
 
-
-int main() {
-
-
-  std::cout << "Hello, World!" << std::endl;
-  std::string T1 = "Worker1";
-  std::string T2 = "Worker2";
-  auto t1 = createAndStartThread(-2, (std::string &) "T1", doSomeWork, 5);
-  auto t2 = createAndStartThread(-1, T2, doSomeWork, 5);
-
-  std::cout << "Main thread waiting for threads to finish bullshit" << std::endl;
-  t1->join();
-  t2->join();
-  std::cout << "main exiting " << std::endl;
+struct MyStruct {
+  int d_[3];
+};
+using namespace Common;
+auto consumeFunction(LFQueue<MyStruct>* lfq) {
+  using namespace std::literals::chrono_literals;
+  std::this_thread::sleep_for(5s);
+  while(lfq->size()) {
+    const auto d = lfq->getNextToRead();
+    lfq->updateReadIndex();
+    std::cout << "consumeFunction read elem:" << d->d_[0]
+              << "," << d->d_[1] << "," << d->d_[2] << " lfq-size:"
+              <<lfq->size() << std::endl;
+    std::this_thread::sleep_for(1s);
+  }
+  std::cout << "consumeFunction exiting." << std::endl;
+}
+int main(int, char **) {
+  LFQueue<MyStruct> lfq(20);
+  auto ct = createAndStartThread(-1, "WhackThing", consumeFunction, &lfq);
+  for(auto i = 0; i < 50; ++i) {
+    const MyStruct d{i, i * 10, i * 100};
+    *(lfq.getNextToWriteTo()) = d;
+    lfq.updateWriteIndex();
+    std::cout << "main constructed elem:" << d.d_[0] << ","
+              << d.d_[1] << "," << d.d_[2] << " lfq-size:" <<
+              lfq.size() << std::endl;
+    using namespace std::literals::chrono_literals;
+    std::this_thread::sleep_for(1s);
+  }
+  ct->join();
+  std::cout << "main exiting." << std::endl;
   return 0;
 }
 
