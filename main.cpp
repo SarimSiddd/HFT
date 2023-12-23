@@ -1,8 +1,8 @@
-#include <iostream>
-#include "thread_utils.h"
-#include "mem_pool.h"
 #include "lf_queue.h"
 #include "logging.h"
+#include "mem_pool.h"
+#include "thread_utils.h"
+#include <iostream>
 
 using namespace Common;
 int main(int, char **) {
@@ -17,20 +17,12 @@ int main(int, char **) {
   return 0;
 }
 
-void inline print ()
-{
+void inline print() {
   std::cout << std::endl;
 }
 
-
-template<typename T, typename ... A>
-void inline print(T&& first, A &&...args)
-{
+template<typename T, typename... A>
+void inline print(T &&first, A &&...args) {
   std::cout << std::forward<T>(first) << std::endl;
   print(std::forward<A>(args)...);
-
 }
-
-
-
-

@@ -5,10 +5,10 @@
 #ifndef HFTBOT__LOGGING_H_
 #define HFTBOT__LOGGING_H_
 
-#include <string>
-#include <fstream>
 #include "macros.h"
 #include "thread_utils.h"
+#include <fstream>
+#include <string>
 
 namespace Common {
 constexpr size_t LOG_QUEUE_SIZE = 8 * 1024 * 1024;
@@ -30,14 +30,16 @@ struct LogElement {
   LogType type_ = LogType::CHAR;
   union {
     char c;
-    int i; long l; long long ll;
-    unsigned u; unsigned long ul; unsigned long long ull;
-    float f; double d;
+    int i;
+    long l;
+    long long ll;
+    unsigned u;
+    unsigned long ul;
+    unsigned long long ull;
+    float f;
+    double d;
   } u_;
-
 };
-
-
 
 class Logger final {
 
@@ -46,19 +48,17 @@ class Logger final {
     while (running_) {
       for (auto next = queue_.getNextToRead();
            queue_.size() && next; next = queue_
-          .getNextToRead()) {
+                                             .getNextToRead()) {
         switch (next->type_) {
           case LogType::CHAR: file_ << next->u_.c; break;
           case LogType::INTEGER: file_ << next->u_.i; break;
           case LogType::LONG_INTEGER: file_ << next->u_.l; break;
-          case LogType::LONG_LONG_INTEGER: file_ << next->
-                u_.ll; break;
-          case LogType::UNSIGNED_INTEGER: file_ << next->
-                u_.u; break;
-          case LogType::UNSIGNED_LONG_INTEGER: file_ <<
-                                                     next->u_.ul; break;
+          case LogType::LONG_LONG_INTEGER: file_ << next->u_.ll; break;
+          case LogType::UNSIGNED_INTEGER: file_ << next->u_.u; break;
+          case LogType::UNSIGNED_LONG_INTEGER: file_ << next->u_.ul; break;
           case LogType::UNSIGNED_LONG_LONG_INTEGER: file_
-                << next->u_.ull; break;
+              << next->u_.ull;
+              break;
           case LogType::FLOAT: file_ << next->u_.f; break;
           case LogType::DOUBLE: file_ << next->u_.d; break;
         }
@@ -71,19 +71,17 @@ class Logger final {
   }
 
  public:
-  explicit Logger (const std::string& file_name) : file_name_(file_name), queue_(LOG_QUEUE_SIZE)
-  {
+  explicit Logger(const std::string &file_name) : file_name_(file_name), queue_(LOG_QUEUE_SIZE) {
     file_.open(file_name_);
     ASSERT(file_.is_open(), "Could not open log file:" + file_name_);
-    logger_thread_ = createAndStartThread(-1, "Common/Logger", [this](){
+    logger_thread_ = createAndStartThread(-1, "Common/Logger", [this]() {
       flushQueue();
     });
     ASSERT(logger_thread_ != nullptr, "Failed to start logger thread.");
   }
 
   ~Logger() {
-    std::cerr << "Flushing and closing Logger for " <<
-              file_name_ << std::endl;
+    std::cerr << "Flushing and closing Logger for " << file_name_ << std::endl;
     while (queue_.size()) {
       using namespace std::literals::chrono_literals;
       std::this_thread::sleep_for(1s);
@@ -104,7 +102,7 @@ class Logger final {
   std::ofstream file_;
   LFQueue<LogElement> queue_;
   std::atomic<bool> running_ = {true};
-  std::thread * logger_thread_ = nullptr;
+  std::thread *logger_thread_ = nullptr;
 
   auto pushValue(const LogElement &log_element) noexcept {
     *(queue_.getNextToWriteTo()) = log_element;
@@ -130,16 +128,13 @@ class Logger final {
     pushValue(LogElement{LogType::INTEGER, {.i = value}});
   }
   auto pushValue(const long value) noexcept {
-    pushValue(LogElement{LogType::LONG_INTEGER, {.l =
-    value}});
+    pushValue(LogElement{LogType::LONG_INTEGER, {.l = value}});
   }
   auto pushValue(const long long value) noexcept {
-    pushValue(LogElement{LogType::LONG_LONG_INTEGER, {.ll =
-    value}});
+    pushValue(LogElement{LogType::LONG_LONG_INTEGER, {.ll = value}});
   }
   auto pushValue(const unsigned value) noexcept {
-    pushValue(LogElement{LogType::UNSIGNED_INTEGER, {.u =
-    value}});
+    pushValue(LogElement{LogType::UNSIGNED_INTEGER, {.u = value}});
   }
   auto pushValue(const unsigned long value) noexcept {
     pushValue(LogElement{LogType::UNSIGNED_LONG_INTEGER,
@@ -157,18 +152,16 @@ class Logger final {
   }
 
  public:
-  template <typename T, typename ... A>
-  auto log(const char * s, const T& value, A... args) noexcept {
+  template<typename T, typename... A>
+  auto log(const char *s, const T &value, A... args) noexcept {
 
-    while (*s)
-    {
-      if (*s == '%'){
-        if ((UNLIKELY(*(s+1) == '%'))){
+    while (*s) {
+      if (*s == '%') {
+        if ((UNLIKELY(*(s + 1) == '%'))) {
           ++s;
-        }
-        else {
+        } else {
           pushValue(value);
-          log(s+1, args...);
+          log(s + 1, args...);
           return;
         }
       }
@@ -178,26 +171,20 @@ class Logger final {
     FATAL("extra args provided to log()");
   };
 
-  auto log(const char * s) noexcept{
+  auto log(const char *s) noexcept {
 
-    while (*s)
-    {
-      if (*s == '%')
-      {
-        if (UNLIKELY((*(s+1) == '%'))){
-            ++s;
-        }
-        else {
+    while (*s) {
+      if (*s == '%') {
+        if (UNLIKELY((*(s + 1) == '%'))) {
+          ++s;
+        } else {
           FATAL("Incorrect format provided to log()");
         }
       }
       pushValue(*s++);
     }
   }
-
-
 };
-}
+}// namespace Common
 
-
-#endif //HFTBOT__LOGGING_H_
+#endif//HFTBOT__LOGGING_H_
