@@ -15,7 +15,6 @@
 #include <netinet/in.h>
 #include <netinet/tcp.h>
 #include <string>
-#include <sys/epoll.h>
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <unistd.h>

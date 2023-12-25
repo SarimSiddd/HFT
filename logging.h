@@ -7,6 +7,7 @@
 
 #include "macros.h"
 #include "thread_utils.h"
+#include "lf_queue.h"
 #include <fstream>
 #include <string>
 
